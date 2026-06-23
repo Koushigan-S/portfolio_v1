@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Simple in-memory rate limiter (per IP, resets on server restart)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 3; // Max 3 submissions per window
@@ -84,6 +82,13 @@ export async function POST(req: NextRequest) {
       console.error('CONTACT_TO_EMAIL not set');
       return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error('RESEND_API_KEY is not set');
+      return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
+    }
+    const resend = new Resend(apiKey);
 
     // Send via Resend
     const { error } = await resend.emails.send({

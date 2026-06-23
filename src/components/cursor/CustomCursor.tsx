@@ -17,7 +17,6 @@ interface TrailPoint {
 
 export function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
   
   const mousePos = useRef({ x: 0, y: 0 });
   const cursorTarget = useRef({ x: 0, y: 0 });
@@ -32,8 +31,7 @@ export function CustomCursor() {
     if (typeof window === 'undefined' || window.matchMedia('(hover: none)').matches) return;
 
     const canvas = canvasRef.current;
-    const ring = ringRef.current;
-    if (!canvas || !ring) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -54,38 +52,27 @@ export function CustomCursor() {
 
     const handleMouseDown = () => {
       isClicking.current = true;
-      if (ring) ring.style.transform = 'translate(-50%, -50%) scale(0.7)';
     };
 
     const handleMouseUp = () => {
       isClicking.current = false;
-      if (ring) ring.style.transform = 'translate(-50%, -50%) scale(1)';
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
-    // Handles magnetic effect
-    let magneticElement: HTMLElement | null = null;
-    let magneticBounds: DOMRect | null = null;
-
     const handleElementHover = (e: MouseEvent) => {
       const target = e.currentTarget as HTMLElement;
       isHovered.current = true;
-      ring?.classList.add('expanded');
 
       const tagName = target.tagName.toLowerCase();
       if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') {
         hoverType.current = 'textInput';
-        ring?.classList.add('hidden-cursor');
       } else if (target.hasAttribute('data-cursor-magnetic')) {
         hoverType.current = 'magnetic';
-        magneticElement = target;
-        magneticBounds = target.getBoundingClientRect();
       } else if (target.hasAttribute('data-cursor-3d')) {
         hoverType.current = 'canvas3d';
-        ring?.classList.add('crosshair');
       } else {
         hoverType.current = 'normal';
       }
@@ -94,11 +81,6 @@ export function CustomCursor() {
     const handleElementLeave = () => {
       isHovered.current = false;
       hoverType.current = 'normal';
-      magneticElement = null;
-      magneticBounds = null;
-      ring?.classList.remove('expanded');
-      ring?.classList.remove('crosshair');
-      ring?.classList.remove('hidden-cursor');
     };
 
     // Main animation loop
@@ -107,34 +89,9 @@ export function CustomCursor() {
     const tick = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Handle magnetic snapping
-      if (hoverType.current === 'magnetic' && magneticElement && magneticBounds) {
-        const centerX = magneticBounds.left + magneticBounds.width / 2;
-        const centerY = magneticBounds.top + magneticBounds.height / 2;
-        
-        // Snap cursor target closer to element center
-        cursorTarget.current.x = centerX + (mousePos.current.x - centerX) * 0.35;
-        cursorTarget.current.y = centerY + (mousePos.current.y - centerY) * 0.35;
-
-        // Also magnetic pull visual element itself
-        const deltaX = (mousePos.current.x - centerX) * 0.2;
-        const deltaY = (mousePos.current.y - centerY) * 0.2;
-        magneticElement.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
-      } else if (magneticElement) {
-        // Reset transformation when element is no longer snapped
-        magneticElement.style.transform = '';
-        magneticElement = null;
-      }
-
       // Smooth current cursor position
       cursorCurrent.current.x += (cursorTarget.current.x - cursorCurrent.current.x) * 0.12;
       cursorCurrent.current.y += (cursorTarget.current.y - cursorCurrent.current.y) * 0.12;
-
-      // Update HTML ring position
-      if (ring) {
-        ring.style.left = `${cursorCurrent.current.x}px`;
-        ring.style.top = `${cursorCurrent.current.y}px`;
-      }
 
       // Generate tail silver glitter particles if not hover screen corners and not in text input
       if (experienceConfig.features.particleSystem && hoverType.current !== 'textInput' && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
@@ -253,69 +210,18 @@ export function CustomCursor() {
           zIndex: 9999,
         }}
       />
-      <div
-        ref={ringRef}
-        className="cursor-ring"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '36px',
-          height: '36px',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          zIndex: 9998,
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
-          transition: 'width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, box-shadow 0.3s',
-        }}
-      />
       <style jsx global>{`
         body {
-          cursor: default !important;
+          cursor: url('/cursor-glass-32.png') 0 0, default !important;
         }
         a, button, [role="button"], [data-cursor-magnetic] {
-          cursor: pointer !important;
+          cursor: url('/cursor-glass-32.png') 0 0, pointer !important;
         }
         input, select, textarea {
           cursor: auto !important;
         }
         input[type="text"], input[type="email"], textarea {
           cursor: text !important;
-        }
-        .cursor-ring.hidden-cursor {
-          opacity: 0 !important;
-          width: 0px !important;
-          height: 0px !important;
-        }
-        .cursor-ring.expanded {
-          width: 56px !important;
-          height: 56px !important;
-          background-color: rgba(255, 255, 255, 0.1) !important;
-          border-color: rgba(59, 130, 246, 0.5) !important;
-          box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-        }
-        .cursor-ring.crosshair::before,
-        .cursor-ring.crosshair::after {
-          content: '';
-          position: absolute;
-          background: rgba(59, 130, 246, 0.8);
-        }
-        .cursor-ring.crosshair::before {
-          top: 50%;
-          left: 0;
-          width: 100%;
-          height: 1px;
-        }
-        .cursor-ring.crosshair::after {
-          left: 50%;
-          top: 0;
-          width: 1px;
-          height: 100%;
         }
       `}</style>
     </>

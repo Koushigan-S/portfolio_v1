@@ -48,7 +48,7 @@ export function FloatingNav() {
         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
         aria-label="NOVA LAB HUD"
       >
-        <div className="relative liquid-nav flex items-center justify-between px-3 py-2 sm:px-6 sm:py-2.5 pointer-events-auto">
+        <div className="relative liquid-nav flex items-center justify-between px-4 py-2.5 sm:px-8 sm:py-3.5 pointer-events-auto">
           
           {/* Left: Brand + Drone Status */}
           <div className="flex items-center gap-3">
@@ -74,7 +74,7 @@ export function FloatingNav() {
                 <a
                   key={chamber.href}
                   href={chamber.href}
-                  className="relative px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1.5 text-xs font-mono transition-all duration-300 focus-visible:ring-1 focus-visible:ring-blue-500 z-10 select-none group"
+                  className="relative px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-full flex items-center gap-1.5 text-xs font-mono transition-all duration-300 focus-visible:ring-1 focus-visible:ring-blue-500 z-10 select-none group"
                   onMouseEnter={() => setHoveredIdx(chamber.index)}
                   onMouseLeave={() => setHoveredIdx(null)}
                   data-cursor-magnetic
@@ -128,7 +128,7 @@ export function FloatingNav() {
             
             <button
               onClick={toggleMute}
-              className="p-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/30 text-white/60 hover:text-blue-400 transition-all duration-300"
+              className="p-2.5 rounded-full bg-white/5 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/35 text-white/60 hover:text-blue-400 transition-all duration-300"
               data-cursor-magnetic
               aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
             >

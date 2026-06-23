@@ -96,7 +96,7 @@ export function JourneyMap() {
                 {/* Corridor Record Box */}
                 <div className={`ml-20 md:ml-0 w-full md:w-1/2 ${isLeft ? 'md:pl-16' : 'md:pr-16'}`}>
                   <button
-                    className="w-full text-left p-6 rounded border glass hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative focus-visible:ring-2 focus-visible:ring-blue-500"
+                    className="w-full text-left p-8 rounded border glass hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative focus-visible:ring-2 focus-visible:ring-blue-500"
                     onClick={() => setExpandedId(isExpanded ? null : phase.id)}
                     aria-expanded={isExpanded}
                   >

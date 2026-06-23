@@ -76,7 +76,7 @@ export function AboutTimeline() {
                 <div className={`ml-12 md:ml-0 w-full md:w-1/2 ${isEven ? 'md:pl-12' : 'md:pr-12'}`}>
                   {isClassified ? (
                     <div
-                      className="p-6 rounded border bg-gradient-to-br from-red-950/20 to-black/80 border-red-500/30 shadow-[0_0_24px_rgba(239,68,68,0.08)] relative overflow-hidden"
+                      className="p-8 rounded border bg-gradient-to-br from-red-950/20 to-black/80 border-red-500/30 shadow-[0_0_24px_rgba(239,68,68,0.08)] relative overflow-hidden"
                       data-cursor-magnetic
                     >
                       <div className="absolute top-0 right-0 p-3 text-red-500/30">
@@ -101,7 +101,7 @@ export function AboutTimeline() {
                     </div>
                   ) : (
                     <div
-                      className="glass p-6 rounded border transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] group relative"
+                      className="glass p-8 rounded border transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] group relative"
                       data-cursor-magnetic
                     >
                       {/* Interactive dot grid corners */}

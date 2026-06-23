@@ -476,7 +476,7 @@ select:focus-visible,
   background: var(--bg-card);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 32px;
   transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease-spring);
   cursor: pointer;
 }

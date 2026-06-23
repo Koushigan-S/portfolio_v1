@@ -348,7 +348,7 @@ export function ProjectGalaxy() {
 
         {/* 3D Space Canvas View / High quality 2D layout list */}
         <motion.div
-          className="relative h-[450px] md:h-[620px] rounded border border-blue-500/10 bg-black/40 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]"
+          className="relative h-[450px] md:h-[620px] rounded-2xl border border-blue-500/10 bg-black/40 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]"
           initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -364,21 +364,21 @@ export function ProjectGalaxy() {
             <GalaxyCanvasDynamic selectedId={selectedId} onSelect={handleSelect} shouldReduceMotion={shouldReduceMotion} />
           ) : (
             // High quality fallback list layout
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-12 h-full overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-12 h-full overflow-y-auto items-stretch">
               {projects.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => handleSelect(p.id)}
-                  className="p-8 md:p-10 rounded-2xl border border-blue-500/20 bg-black/30 hover:bg-[#0d0d12]/50 hover:border-blue-500/30 text-left transition-all duration-300 relative group focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="p-8 md:p-10 rounded-2xl border border-blue-500/20 bg-black/30 hover:bg-[#0d0d12]/50 hover:border-blue-500/30 text-left transition-all duration-300 relative group focus-visible:ring-2 focus-visible:ring-blue-500 flex flex-col justify-center gap-2.5 min-h-[140px] h-full"
                   data-cursor-magnetic
                 >
-                  <span className="font-mono text-[9px] text-blue-400/50 uppercase tracking-widest">
+                  <span className="font-mono text-[9px] text-blue-400/50 uppercase tracking-widest leading-none">
                     {p.category}{' // PORT_ACTIVE'}
                   </span>
-                  <h3 className="font-mono text-base font-bold text-white mt-1 group-hover:text-blue-400 transition-colors">
+                  <h3 className="font-mono text-base font-bold text-white group-hover:text-blue-400 transition-colors leading-tight">
                     {p.name}
                   </h3>
-                  <p className="font-mono text-xs text-[#a0a0b0] mt-2 line-clamp-2">
+                  <p className="font-mono text-xs text-[#a0a0b0] leading-relaxed line-clamp-2">
                     {p.tagline}
                   </p>
                 </button>

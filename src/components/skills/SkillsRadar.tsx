@@ -180,7 +180,7 @@ export function SkillsRadar() {
             {skillsRadar.map((skill, i) => (
               <motion.div
                 key={skill.name}
-                className="p-4 rounded-xl"
+                className="p-4 rounded-2xl"
                 style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)' }}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}

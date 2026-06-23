@@ -57,7 +57,7 @@ export function ResumeCard() {
 
         {/* Outer 3D card layout */}
         <motion.div
-          className="max-w-md mx-auto relative group focus-visible:ring-2 focus-visible:ring-blue-500 outline-none rounded"
+          className="max-w-md mx-auto relative group focus-visible:ring-2 focus-visible:ring-blue-500 outline-none rounded-2xl"
           tabIndex={0}
           initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,16 +75,16 @@ export function ResumeCard() {
         >
           {/* Card body */}
           <div
-            className="p-8 md:p-10 rounded-2xl border bg-black/60 border-blue-500/20 group-hover:border-blue-500/35 transition-all duration-300 relative cursor-pointer shadow-[0_0_25px_rgba(59,130,246,0.1)]"
+            className="p-8 md:p-10 rounded-2xl border bg-black/60 border-blue-500/20 group-hover:border-blue-500/35 transition-all duration-300 relative cursor-pointer shadow-[0_0_25px_rgba(59,130,246,0.1)] flex flex-col justify-center gap-4 min-h-[220px]"
             data-cursor-magnetic
           >
             {/* HUD lines */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center">
               <span className="font-mono text-[8px] text-blue-400/40">FILE_RECORD: #092812</span>
               <FileText size={20} className="text-blue-500" />
             </div>
 
-            <div className="space-y-2 mb-6" aria-hidden>
+            <div className="space-y-2 animate-pulse-glow" aria-hidden>
               {[0.4, 0.3, 0.2, 0.1].map((opacity, i) => (
                 <div
                   key={i}
@@ -97,14 +97,16 @@ export function ResumeCard() {
                 />
               ))}
             </div>
-
-            <h3 className="text-lg font-mono font-bold text-white mb-1">
-              {siteConfig.name}
-            </h3>
-            <p className="text-xs font-mono text-[#8c8c9c] mb-8">
-              {siteConfig.title}
-            </p>
-
+ 
+            <div>
+              <h3 className="text-lg font-mono font-bold text-white leading-tight">
+                {siteConfig.name}
+              </h3>
+              <p className="text-xs font-mono text-[#8c8c9c] leading-none mt-1">
+                {siteConfig.title}
+              </p>
+            </div>
+ 
             <button
               onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
               className="w-full py-2.5 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-mono tracking-widest text-white flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(59,130,246,0.2)] focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -114,8 +116,8 @@ export function ResumeCard() {
           </div>
 
           {/* Floating layers behind */}
-          <div className="absolute inset-0 -z-10 rounded border border-white/5 bg-black/40 translate-y-2.5 scale-95" />
-          <div className="absolute inset-0 -z-20 rounded border border-white/5 bg-black/20 translate-y-5 scale-90" />
+          <div className="absolute inset-0 -z-10 rounded-2xl border border-white/5 bg-black/40 translate-y-2.5 scale-95" />
+          <div className="absolute inset-0 -z-20 rounded-2xl border border-white/5 bg-black/20 translate-y-5 scale-90" />
         </motion.div>
       </div>
 

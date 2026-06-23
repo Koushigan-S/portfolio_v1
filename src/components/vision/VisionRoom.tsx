@@ -38,7 +38,7 @@ export function VisionRoom() {
         </motion.div>
 
         {/* Panoramic Glass Framing container */}
-        <div className="relative border border-blue-500/20 rounded-2xl bg-black/45 p-8 md:p-12 shadow-[0_0_30px_rgba(59,130,246,0.05)] overflow-hidden">
+        <div className="relative border border-blue-500/20 rounded-2xl bg-black/45 p-8 md:p-12 shadow-[0_0_30px_rgba(59,130,246,0.05)]">
           
           {/* Panoramic Reticle HUD lines */}
           <div className="absolute top-4 left-4 font-mono text-[9px] text-blue-400/40">
@@ -48,7 +48,7 @@ export function VisionRoom() {
             AZIMUTH: 184.22 // ELEVATION: 42.8
           </div>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10 items-stretch">
             {visionItems.map((item, index) => (
               <motion.div
                 key={item.id}
@@ -56,26 +56,28 @@ export function VisionRoom() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.08 }}
-                className="glass p-8 md:p-10 rounded-2xl border border-blue-500/20 transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group shadow-md"
+                className="glass p-8 md:p-10 rounded-2xl border border-blue-500/20 transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group shadow-md flex flex-col justify-between h-full gap-4 min-h-[220px]"
                 data-cursor-magnetic
               >
-                {/* Visual state headers */}
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-3xl filter drop-shadow-[0_0_6px_rgba(59,130,246,0.2)]">
-                    {item.icon}
-                  </span>
-                  <span className="text-[8px] font-mono tracking-widest text-blue-400/70 bg-blue-500/5 px-2 py-0.5 rounded border border-blue-500/10 uppercase">
-                    {item.status}
-                  </span>
+                <div className="flex flex-col gap-2.5">
+                  {/* Visual state headers */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-3xl filter drop-shadow-[0_0_6px_rgba(59,130,246,0.2)]">
+                      {item.icon}
+                    </span>
+                    <span className="text-[8px] font-mono tracking-widest text-blue-400/70 bg-blue-500/5 px-2 py-0.5 rounded border border-blue-500/10 uppercase">
+                      {item.status}
+                    </span>
+                  </div>
+ 
+                  <p className="text-[9px] font-mono text-blue-400/50 uppercase tracking-widest leading-none mt-1">
+                    COORD_INDEX_0{index + 1}
+                  </p>
+                  
+                  <h3 className="font-mono text-sm font-bold text-white group-hover:text-blue-400 transition-colors leading-tight">
+                    {item.title}
+                  </h3>
                 </div>
-
-                <p className="text-[9px] font-mono text-blue-400/50 uppercase tracking-widest mb-1">
-                  COORD_INDEX_0{index + 1}
-                </p>
-                
-                <h3 className="font-mono text-sm font-bold text-white group-hover:text-blue-400 transition-colors mb-2">
-                  {item.title}
-                </h3>
                 
                 <p className="font-mono text-[11px] text-[#a0a0b0] leading-relaxed">
                   {item.description}

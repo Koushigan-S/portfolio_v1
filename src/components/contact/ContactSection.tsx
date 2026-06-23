@@ -149,11 +149,13 @@ export function ContactSection() {
             <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
               
               {/* Left Side Info Card */}
-              <div className="font-mono flex flex-col justify-between min-h-[300px]">
+              <div className="font-mono flex flex-col justify-center gap-6 min-h-[300px]">
                 <div>
                   <span className="text-[10px] tracking-[0.2em] text-blue-400">{"KOUSHIGAN'S LAB"}</span>
                   <h3 className="text-xl font-bold text-white mt-1 mb-1">{siteConfig.name}</h3>
-                  <p className="text-xs text-[#a0a0b0] mb-6">{siteConfig.title}</p>
+                  <p className="text-xs text-[#a0a0b0] leading-none">
+                    {siteConfig.title}
+                  </p>
                 </div>
                 
                 {/* Magic Social Share Menu */}

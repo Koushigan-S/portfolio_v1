@@ -31,7 +31,7 @@ function AchievementCard({
   return (
     <motion.button
       layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
-      className="w-full text-left p-8 md:p-10 rounded-2xl border bg-[#0d0d12]/75 border-blue-500/20 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)] focus-visible:ring-2 focus-visible:ring-blue-500"
+      className="w-full text-left p-8 md:p-10 rounded-2xl border bg-[#0d0d12]/75 border-blue-500/20 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)] focus-visible:ring-2 focus-visible:ring-blue-500 flex items-center justify-center min-h-[120px] h-full"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -49,23 +49,25 @@ function AchievementCard({
         {hovered ? <DoorOpen size={16} /> : <DoorClosed size={16} />}
       </div>
 
-      <div className="flex items-start gap-4">
-        <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]">{achievement.icon}</span>
-        <div className="flex-1 min-w-0 font-mono">
-          <span
-            className="text-[9px] tracking-widest px-2 py-0.5 rounded border mb-2 inline-block"
-            style={{
-              background: `${color}10`,
-              color,
-              borderColor: `${color}30`,
-            }}
-          >
-            {achievement.category.toUpperCase()}
-          </span>
-          <h3 className="text-sm font-bold text-white mt-1 truncate">
+      <div className="flex items-center gap-4 w-full h-full">
+        <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(59,130,246,0.3)] flex-shrink-0">{achievement.icon}</span>
+        <div className="flex-1 min-w-0 font-mono flex flex-col justify-center gap-1.5 h-full">
+          <div>
+            <span
+              className="text-[9px] tracking-widest px-2 py-0.5 rounded border inline-block"
+              style={{
+                background: `${color}10`,
+                color,
+                borderColor: `${color}30`,
+              }}
+            >
+              {achievement.category.toUpperCase()}
+            </span>
+          </div>
+          <h3 className="text-sm font-bold text-white leading-tight line-clamp-2 w-full break-words">
             {achievement.title}
           </h3>
-          <p className="text-[10px] text-[#8c8c9c] mt-0.5">
+          <p className="text-[10px] text-[#8c8c9c] leading-none">
             {achievement.issuer} · {achievement.date}
           </p>
         </div>
@@ -108,7 +110,7 @@ function AchievementModal({
       {/* Chamber Vault Unlock popup */}
       <motion.div
         layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
-        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-[8001] p-8 md:p-12 rounded-2xl border bg-[#0d0d12]/95"
+        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-[8001] p-8 md:p-12 rounded-2xl border bg-[#0d0d12]/95 overflow-y-auto max-h-[90vh]"
         style={{ borderColor: `${color}40`, boxShadow: `0 0 40px ${color}15` }}
         role="dialog"
         aria-modal="true"
@@ -223,7 +225,7 @@ export function AchievementsVault() {
 
         {/* Cards grid */}
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch"
           layout={!shouldReduceMotion}
         >
           <AnimatePresence mode="popLayout">
@@ -235,6 +237,7 @@ export function AchievementsVault() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
                 transition={{ delay: i * 0.04 }}
+                className="h-full"
               >
                 <AchievementCard
                   achievement={ach}

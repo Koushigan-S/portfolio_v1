@@ -100,37 +100,39 @@ export function JourneyMap() {
                     onClick={() => setExpandedId(isExpanded ? null : phase.id)}
                     aria-expanded={isExpanded}
                   >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span
-                          className="text-[9px] font-mono px-2 py-0.5 rounded-full mb-2 inline-block border"
-                          style={{
-                            background: `${color}10`,
-                            color: color,
-                            borderColor: `${color}25`,
-                          }}
-                        >
-                          {STATUS_LABELS[phase.status]}
-                        </span>
+                    <div className="flex items-center justify-between gap-4 w-full">
+                      <div className="flex flex-col justify-center gap-1.5">
+                        <div>
+                          <span
+                            className="text-[9px] font-mono px-2 py-0.5 rounded-full inline-block border"
+                            style={{
+                              background: `${color}10`,
+                              color: color,
+                              borderColor: `${color}25`,
+                            }}
+                          >
+                            {STATUS_LABELS[phase.status]}
+                          </span>
+                        </div>
                         
-                        <p className="text-[10px] font-mono tracking-widest text-[#8c8c9c] uppercase mb-1">
+                        <p className="text-[10px] font-mono tracking-widest text-[#8c8c9c] uppercase leading-none">
                           {phase.phase}
                         </p>
                         
-                        <h3 className="font-mono text-base font-bold text-white">
+                        <h3 className="font-mono text-base font-bold text-white leading-tight">
                           {phase.title}
                         </h3>
                         
-                        <p className="text-[10px] font-mono text-[#a0a0b0] mt-0.5">
+                        <p className="text-[10px] font-mono text-[#a0a0b0] leading-none">
                           {phase.subtitle}
                         </p>
                       </div>
-
+ 
                       <motion.div
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                         aria-hidden
-                        className="text-[#8c8c9c] group-hover:text-blue-400"
+                        className="text-[#8c8c9c] group-hover:text-blue-400 flex items-center justify-center"
                       >
                         <ChevronDown size={16} />
                       </motion.div>

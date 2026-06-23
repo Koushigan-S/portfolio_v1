@@ -205,7 +205,7 @@ export function TechOrbit() {
           
           {/* Left: 3D Holographic Chamber (Render 2D lists on low tier) */}
           <motion.div
-            className="h-[380px] md:h-[480px] relative rounded border border-blue-500/10 bg-black/40 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]"
+            className="h-[380px] md:h-[480px] relative rounded-2xl border border-blue-500/10 bg-black/40 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]"
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -276,7 +276,7 @@ export function TechOrbit() {
                 {activeCategory.items.map((item) => (
                   <motion.div
                     key={item.name}
-                    className="px-4 py-2.5 rounded font-mono text-xs cursor-default border transition-all duration-300 bg-black/30"
+                    className="px-4.5 py-3 rounded-full font-mono text-xs cursor-default border transition-all duration-300 bg-black/30 flex items-center justify-center text-center leading-none min-h-[38px]"
                     style={{
                       borderColor: hoveredItem === item.name ? activeCategory.color : 'rgba(255,255,255,0.03)',
                       color: hoveredItem === item.name ? activeCategory.color : '#a0a0b0',

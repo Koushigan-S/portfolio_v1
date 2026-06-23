@@ -76,48 +76,48 @@ export function AboutTimeline() {
                 <div className={`ml-12 md:ml-0 w-full md:w-1/2 ${isEven ? 'md:pl-12' : 'md:pr-12'}`}>
                   {isClassified ? (
                     <div
-                      className="p-8 md:p-12 rounded-2xl border bg-gradient-to-br from-red-950/20 to-black/80 border-red-500/20 shadow-[0_0_24px_rgba(239,68,68,0.08)] relative overflow-hidden"
+                      className="p-8 md:p-12 rounded-2xl border bg-gradient-to-br from-red-950/20 to-black/80 border-red-500/20 shadow-[0_0_24px_rgba(239,68,68,0.08)] relative overflow-hidden flex flex-col justify-center gap-2 min-h-[160px]"
                       data-cursor-magnetic
                     >
                       <div className="absolute top-0 right-0 p-3 text-red-500/30">
                         <ShieldAlert size={20} className={shouldReduceMotion ? '' : 'animate-pulse'} />
                       </div>
                       
-                      <div className="flex items-center gap-3 mb-2 font-mono">
+                      <div className="flex items-center gap-3 font-mono">
                         <span className="text-xl">{entry.icon}</span>
                         <span className="text-[10px] tracking-wider text-red-500">
                           YEAR: {entry.year}
                         </span>
                       </div>
-                      <h3 className="text-lg font-mono text-red-500 tracking-widest font-bold mb-2">
+                      <h3 className="text-lg font-mono text-red-500 tracking-widest font-bold">
                         {entry.title}
                       </h3>
                       <p className="text-[11px] font-mono text-red-400/70">
                         {entry.subtitle}
                       </p>
-                      <p className="text-xs font-mono text-red-500/50 mt-2 uppercase tracking-wide">
+                      <p className="text-xs font-mono text-red-500/50 uppercase tracking-wide">
                         CLASSIFIED: ACCESS_DENIED
                       </p>
                     </div>
                   ) : (
                     <div
-                      className="glass p-8 md:p-12 rounded-2xl border border-white/10 transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] group relative"
+                      className="glass p-8 md:p-12 rounded-2xl border border-white/10 transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] group relative flex flex-col justify-center gap-2 min-h-[160px]"
                       data-cursor-magnetic
                     >
                       {/* Interactive dot grid corners */}
                       <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-blue-500/20 group-hover:border-blue-500/50 transition-colors" />
                       <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-blue-500/20 group-hover:border-blue-500/50 transition-colors" />
-
-                      <div className="flex items-center gap-3 mb-2 font-mono">
+ 
+                      <div className="flex items-center gap-3 font-mono">
                         <span className="text-xl">{entry.icon}</span>
                         <span className="text-[10px] tracking-wider text-blue-400">{entry.year}</span>
                       </div>
                       
-                      <h3 className="text-base font-mono font-bold text-white mb-1">
+                      <h3 className="text-base font-mono font-bold text-white">
                         {entry.title}
                       </h3>
                       
-                      <p className="text-[11px] font-mono text-blue-500/70 mb-3 uppercase tracking-wider">
+                      <p className="text-[11px] font-mono text-blue-500/70 uppercase tracking-wider">
                         {entry.subtitle}
                       </p>
                       

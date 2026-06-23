@@ -40,7 +40,7 @@ export function FloatingNav() {
     <>
       {/* HUD Layout Navbar */}
       <motion.nav
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-[1000] w-[92vw] max-w-[1100px] pointer-events-none"
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-[1000] w-[96vw] min-[375px]:w-[92vw] max-w-[1100px] pointer-events-none"
         animate={{
           y: hidden ? -100 : 0,
           opacity: hidden ? 0 : 1,
@@ -48,7 +48,7 @@ export function FloatingNav() {
         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
         aria-label="NOVA LAB HUD"
       >
-        <div className="relative liquid-nav flex items-center justify-between px-8 py-4.5 pointer-events-auto">
+        <div className="relative liquid-nav flex items-center justify-between px-2 py-2 min-[375px]:px-4 min-[375px]:py-3 sm:px-8 sm:py-4 pointer-events-auto">
           
           {/* Left: Brand + Drone Status */}
           <div className="flex items-center gap-3">
@@ -74,7 +74,7 @@ export function FloatingNav() {
                 <a
                   key={chamber.href}
                   href={chamber.href}
-                  className="relative px-3 py-2.5 sm:px-5 sm:py-3.5 rounded-full flex items-center justify-center gap-2 text-xs font-mono transition-all duration-300 focus-visible:ring-1 focus-visible:ring-blue-500 z-10 select-none group"
+                  className="relative px-1.5 py-1.5 min-[375px]:px-2.5 min-[375px]:py-2 sm:px-3 sm:py-2.5 md:px-4.5 md:py-3 rounded-full flex items-center justify-center gap-2 text-xs font-mono transition-all duration-300 focus-visible:ring-1 focus-visible:ring-blue-500 z-10 select-none group"
                   onMouseEnter={() => setHoveredIdx(chamber.index)}
                   onMouseLeave={() => setHoveredIdx(null)}
                   data-cursor-magnetic
@@ -87,7 +87,7 @@ export function FloatingNav() {
                     size={14} 
                     className={`transition-colors duration-300 ${isActive ? 'text-blue-400' : 'text-white/40 group-hover:text-white/70'}`} 
                   />
-                  <span className="hidden md:inline text-[10px] tracking-wider font-semibold">
+                  <span className="hidden md:inline text-[10px] tracking-wider font-semibold leading-none">
                     {chamber.shortLabel}
                   </span>
 
@@ -128,7 +128,7 @@ export function FloatingNav() {
             
             <button
               onClick={toggleMute}
-              className="p-2.5 rounded-full bg-white/5 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/35 text-white/60 hover:text-blue-400 transition-all duration-300"
+              className="p-1.5 min-[375px]:p-2.5 rounded-full bg-white/5 border border-white/5 hover:bg-blue-500/10 hover:border-blue-500/35 text-white/60 hover:text-blue-400 transition-all duration-300"
               data-cursor-magnetic
               aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
             >

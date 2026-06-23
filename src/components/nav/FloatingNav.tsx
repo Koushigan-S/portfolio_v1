@@ -3,19 +3,30 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, ShieldAlert, Cpu } from 'lucide-react';
+import { 
+  Volume2, 
+  VolumeX, 
+  Cpu, 
+  Home, 
+  User, 
+  Layers, 
+  GitCommit, 
+  Award, 
+  Eye, 
+  Mail 
+} from 'lucide-react';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { useDrone } from '@/contexts/DroneContext';
 
 const NAV_CHAMBERS = [
-  { index: 0, label: 'LOBBY', href: '#home' },
-  { index: 1, label: 'IDENTITY', href: '#about' },
-  { index: 2, label: 'TECH STACK', href: '#tech-stack' },
-  { index: 3, label: 'GALAXY', href: '#projects' },
-  { index: 4, label: 'CORRIDOR', href: '#timeline' },
-  { index: 5, label: 'VAULT', href: '#achievements' },
-  { index: 6, label: 'VISION', href: '#vision' },
-  { index: 7, label: 'TERMINAL', href: '#contact' },
+  { index: 0, label: 'LOBBY', shortLabel: 'LOBBY', href: '#home', Icon: Home },
+  { index: 1, label: 'IDENTITY', shortLabel: 'ABOUT', href: '#about', Icon: User },
+  { index: 2, label: 'TECH STACK', shortLabel: 'TECH', href: '#tech-stack', Icon: Cpu },
+  { index: 3, label: 'GALAXY', shortLabel: 'PROJECTS', href: '#projects', Icon: Layers },
+  { index: 4, label: 'CORRIDOR', shortLabel: 'JOURNEY', href: '#timeline', Icon: GitCommit },
+  { index: 5, label: 'VAULT', shortLabel: 'VAULT', href: '#achievements', Icon: Award },
+  { index: 6, label: 'VISION', shortLabel: 'VISION', href: '#vision', Icon: Eye },
+  { index: 7, label: 'TERMINAL', shortLabel: 'CONTACT', href: '#contact', Icon: Mail },
 ];
 
 export function FloatingNav() {
@@ -37,12 +48,12 @@ export function FloatingNav() {
         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
         aria-label="NOVA LAB HUD"
       >
-        <div className="relative glass flex items-center justify-between px-6 py-3 rounded-full pointer-events-auto border border-blue-500/25 bg-black/75 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+        <div className="relative liquid-nav flex items-center justify-between px-3 py-2 sm:px-6 sm:py-2.5 pointer-events-auto">
           
           {/* Left: Brand + Drone Status */}
           <div className="flex items-center gap-3">
-            <Link href="#home" data-cursor-magnetic className="flex items-center gap-2">
-              <span className="font-mono text-sm tracking-[0.2em] text-white font-bold">NOVA LAB</span>
+            <Link href="#home" data-cursor-magnetic className="flex items-center gap-1">
+              <span className="font-mono text-xs sm:text-sm tracking-[0.2em] text-white font-bold hidden min-[480px]:inline">NOVA LAB</span>
             </Link>
             <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
             <div className="flex items-center gap-1.5 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 text-[10px] font-mono text-blue-400 hidden sm:flex">
@@ -54,8 +65,8 @@ export function FloatingNav() {
             </div>
           </div>
 
-          {/* Center: HUD Chamber dots */}
-          <div className="flex items-center gap-3 md:gap-4">
+          {/* Center: Liquid Navigation Pills */}
+          <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
             {NAV_CHAMBERS.map((chamber) => {
               const isActive = currentSection === chamber.index;
               const isHovered = hoveredIdx === chamber.index;
@@ -63,25 +74,33 @@ export function FloatingNav() {
                 <a
                   key={chamber.href}
                   href={chamber.href}
-                  className="relative group p-2 md:p-1 flex items-center justify-center focus-visible:ring-1 focus-visible:ring-blue-500"
+                  className="relative px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1.5 text-xs font-mono transition-all duration-300 focus-visible:ring-1 focus-visible:ring-blue-500 z-10 select-none group"
                   onMouseEnter={() => setHoveredIdx(chamber.index)}
                   onMouseLeave={() => setHoveredIdx(null)}
                   data-cursor-magnetic
                   aria-label={`Go to ${chamber.label}`}
+                  style={{
+                    color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.45)',
+                  }}
                 >
-                  {/* Invisible touch target expander for mobile accessibility */}
-                  <span className="absolute inset-[-6px] md:inset-0" />
-
-                  {/* Glowing dot */}
-                  <div
-                    className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] scale-110'
-                        : 'bg-white/20 group-hover:bg-white/50 group-hover:scale-105'
-                    }`}
+                  <chamber.Icon 
+                    size={14} 
+                    className={`transition-colors duration-300 ${isActive ? 'text-blue-400' : 'text-white/40 group-hover:text-white/70'}`} 
                   />
+                  <span className="hidden md:inline text-[10px] tracking-wider font-semibold">
+                    {chamber.shortLabel}
+                  </span>
 
-                  {/* Tooltip on hover */}
+                  {/* Sliding active pill (liquid spring effect) */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-nav-pill"
+                      className="absolute inset-0 bg-blue-500/10 border border-blue-500/30 rounded-full -z-10"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+
+                  {/* Tooltip on hover (for non-desktop where label is hidden) */}
                   <AnimatePresence>
                     {isHovered && (
                       <motion.div
@@ -89,7 +108,7 @@ export function FloatingNav() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute bottom-[-32px] left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 border border-blue-500/30 text-[9px] font-mono text-blue-400 px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] pointer-events-none"
+                        className="absolute bottom-[-32px] left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 border border-blue-500/30 text-[9px] font-mono text-blue-400 px-2.5 py-0.5 rounded shadow-[0_4px_12px_rgba(0,0,0,0.5)] pointer-events-none md:hidden"
                       >
                         {chamber.label}
                       </motion.div>

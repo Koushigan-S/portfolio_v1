@@ -4,7 +4,7 @@ import { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { techStack } from '@/config/skills.config';
 import { useDrone } from '@/contexts/DroneContext';
 import { experienceConfig } from '@/config/experience.config';
@@ -62,7 +62,15 @@ function TechNode({
   );
 }
 
-function TechScene({ selectedCategory, hoveredItem }: { selectedCategory: string; hoveredItem: string | null }) {
+function TechScene({ 
+  selectedCategory, 
+  hoveredItem,
+  shouldReduceMotion,
+}: { 
+  selectedCategory: string; 
+  hoveredItem: string | null;
+  shouldReduceMotion: boolean;
+}) {
   const category = techStack.find((c) => c.name === selectedCategory) ?? techStack[0];
   const items = category.items.map((i) => i.name);
   const groupRef = useRef<THREE.Group>(null);
@@ -71,10 +79,10 @@ function TechScene({ selectedCategory, hoveredItem }: { selectedCategory: string
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (groupRef.current) {
-      groupRef.current.rotation.y = t * 0.18;
+      groupRef.current.rotation.y = shouldReduceMotion ? 0 : t * 0.18;
     }
     if (pillarRef.current) {
-      pillarRef.current.rotation.y = -t * 0.1;
+      pillarRef.current.rotation.y = shouldReduceMotion ? 0 : -t * 0.1;
     }
   });
 
@@ -135,14 +143,26 @@ function TechScene({ selectedCategory, hoveredItem }: { selectedCategory: string
   );
 }
 
-function TechOrbitCanvas({ selectedCategory, hoveredItem }: { selectedCategory: string; hoveredItem: string | null }) {
+function TechOrbitCanvas({ 
+  selectedCategory, 
+  hoveredItem,
+  shouldReduceMotion,
+}: { 
+  selectedCategory: string; 
+  hoveredItem: string | null;
+  shouldReduceMotion: boolean;
+}) {
   return (
     <Canvas
       camera={{ position: [0, 1.5, 5.0], fov: 48 }}
       gl={{ antialias: true, alpha: true }}
       style={{ background: 'transparent' }}
     >
-      <TechScene selectedCategory={selectedCategory} hoveredItem={hoveredItem} />
+      <TechScene 
+        selectedCategory={selectedCategory} 
+        hoveredItem={hoveredItem} 
+        shouldReduceMotion={shouldReduceMotion}
+      />
     </Canvas>
   );
 }
@@ -156,6 +176,7 @@ export function TechOrbit() {
   const { deviceTier } = useDrone();
   const [selectedCategory, setSelectedCategory] = useState(techStack[0].name);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion() ?? false;
 
   const activeCategory = techStack.find((c) => c.name === selectedCategory) ?? techStack[0];
 
@@ -166,16 +187,16 @@ export function TechOrbit() {
         {/* Chamber Header */}
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">CHAMBER_02 // ARSENAL</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-4">
             <GlitchText text="TECH STACK CHAMBER" />
           </h2>
-          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#a0a0b0]">
+          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#8c8c9c]">
             Interact with the central database core array to scan languages, frameworks, and engine details.
           </p>
         </motion.div>
@@ -185,10 +206,10 @@ export function TechOrbit() {
           {/* Left: 3D Holographic Chamber (Render 2D lists on low tier) */}
           <motion.div
             className="h-[380px] md:h-[480px] relative rounded border border-blue-500/10 bg-black/40 overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.4)]"
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             {/* HUD decoration grids */}
             <div className="absolute top-4 left-4 font-mono text-[9px] text-blue-400/40 pointer-events-none">
@@ -199,12 +220,13 @@ export function TechOrbit() {
               <TechOrbitCanvasDynamic
                 selectedCategory={selectedCategory}
                 hoveredItem={hoveredItem}
+                shouldReduceMotion={shouldReduceMotion}
               />
             ) : (
               // High Quality 2D Alternative representation for low-end / mobile
               <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gradient-to-b from-blue-950/10 to-transparent">
                 <div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center border animate-spin-slow mb-6"
+                  className={shouldReduceMotion ? "w-24 h-24 rounded-full flex items-center justify-center border mb-6" : "w-24 h-24 rounded-full flex items-center justify-center border animate-spin-slow mb-6"}
                   style={{ borderColor: activeCategory.color, boxShadow: `0 0 20px ${activeCategory.color}25` }}
                 >
                   <span className="text-3xl text-white">{activeCategory.icon}</span>
@@ -226,7 +248,7 @@ export function TechOrbit() {
                 <button
                   key={cat.name}
                   onClick={() => setSelectedCategory(cat.name)}
-                  className="px-4 py-2 rounded font-mono text-[11px] tracking-wider transition-all duration-300 border bg-[#0d0d12]/60 hover:bg-[#16161d]"
+                  className="px-4 py-2 rounded font-mono text-[11px] tracking-wider transition-all duration-300 border bg-[#0d0d12]/60 hover:bg-[#16161d] focus-visible:ring-2 focus-visible:ring-blue-500"
                   style={{
                     borderColor: selectedCategory === cat.name ? cat.color : 'rgba(255, 255, 255, 0.05)',
                     color: selectedCategory === cat.name ? cat.color : '#a0a0b0',
@@ -246,9 +268,9 @@ export function TechOrbit() {
               <motion.div
                 key={selectedCategory}
                 className="flex flex-wrap gap-3"
-                initial={{ opacity: 0, x: -10 }}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
+                exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 10 }}
                 transition={{ duration: 0.25 }}
               >
                 {activeCategory.items.map((item) => (

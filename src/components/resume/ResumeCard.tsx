@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Download, FileText, X, Briefcase, GraduationCap, Code } from 'lucide-react';
 import { siteConfig } from '@/config/site.config';
 import { experienceConfig } from '@/config/experience.config';
@@ -10,6 +10,19 @@ import { GlitchText } from '../hero/GlitchText';
 export function ResumeCard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+
+  // Lock body scroll when resume modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -31,10 +44,10 @@ export function ResumeCard() {
         
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">SCHEDULER // RECORD</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-12">
@@ -44,12 +57,21 @@ export function ResumeCard() {
 
         {/* Outer 3D card layout */}
         <motion.div
-          className="max-w-md mx-auto relative group"
-          initial={{ opacity: 0, y: 30 }}
+          className="max-w-md mx-auto relative group focus-visible:ring-2 focus-visible:ring-blue-500 outline-none rounded"
+          tabIndex={0}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           onClick={() => setIsOpen(true)}
-          transition={{ duration: 0.8 }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsOpen(true);
+            }
+          }}
+          transition={{ duration: 0.6 }}
+          role="button"
+          aria-label="View Resume Details"
         >
           {/* Card body */}
           <div
@@ -79,13 +101,13 @@ export function ResumeCard() {
             <h3 className="text-lg font-mono font-bold text-white mb-1">
               {siteConfig.name}
             </h3>
-            <p className="text-xs font-mono text-[#a0a0b0] mb-8">
+            <p className="text-xs font-mono text-[#8c8c9c] mb-8">
               {siteConfig.title}
             </p>
 
             <button
               onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
-              className="w-full py-2.5 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-mono tracking-widest text-white flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(59,130,246,0.2)]"
+              className="w-full py-2.5 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-mono tracking-widest text-white flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(59,130,246,0.2)] focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               UNFOLD_RESUME_VIEW
             </button>
@@ -113,9 +135,9 @@ export function ResumeCard() {
             {/* Document body container */}
             <motion.div
               className="relative z-10 w-full max-w-3xl bg-[#0d0d12]/95 border border-blue-500/20 rounded-xl p-8 overflow-y-auto max-h-[90vh] shadow-[0_0_50px_rgba(59,130,246,0.15)] font-mono text-xs text-[#a0a0b0]"
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 30 }}
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
             >
               {/* Header */}
@@ -131,7 +153,7 @@ export function ResumeCard() {
                   <button
                     onClick={handleDownload}
                     disabled={isDownloading}
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded text-[10px] text-white flex items-center gap-1.5 transition-all"
+                    className="px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded text-[10px] text-white flex items-center gap-1.5 transition-all focus-visible:ring-2 focus-visible:ring-blue-500"
                     data-cursor-magnetic
                   >
                     <Download size={12} />
@@ -139,9 +161,11 @@ export function ResumeCard() {
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all"
+                    className="relative p-3 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all focus-visible:ring-2 focus-visible:ring-blue-500"
                     data-cursor-magnetic
+                    aria-label="Close resume view"
                   >
+                    <span className="absolute inset-[-8px] md:inset-0" />
                     <X size={16} />
                   </button>
                 </div>

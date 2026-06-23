@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { achievements, achievementCategories, type Achievement } from '@/config/achievements.config';
-import { X, ExternalLink, ShieldAlert, DoorClosed, DoorOpen } from 'lucide-react';
+import { X, ExternalLink, DoorClosed, DoorOpen } from 'lucide-react';
 import { GlitchText } from '../hero/GlitchText';
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -14,19 +14,29 @@ const CATEGORY_COLORS: Record<string, string> = {
   competition: '#2563eb',
 };
 
-function AchievementCard({ achievement, onClick, isSelected }: { achievement: Achievement; onClick: () => void; isSelected: boolean }) {
+function AchievementCard({ 
+  achievement, 
+  onClick, 
+  isSelected, 
+  shouldReduceMotion 
+}: { 
+  achievement: Achievement; 
+  onClick: () => void; 
+  isSelected: boolean;
+  shouldReduceMotion: boolean;
+}) {
   const color = CATEGORY_COLORS[achievement.category] ?? '#3b82f6';
   const [hovered, setHovered] = useState(false);
 
   return (
     <motion.button
-      layoutId={`achievement-${achievement.id}`}
-      className="w-full text-left p-6 rounded border bg-[#0d0d12]/75 border-blue-500/10 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)]"
+      layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
+      className="w-full text-left p-6 rounded border bg-[#0d0d12]/75 border-blue-500/10 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)] focus-visible:ring-2 focus-visible:ring-blue-500"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      whileHover={{ y: -3 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={shouldReduceMotion ? {} : { y: -3 }}
+      whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
       data-cursor-magnetic
       aria-label={`Unlock vault cell details for ${achievement.title}`}
     >
@@ -55,7 +65,7 @@ function AchievementCard({ achievement, onClick, isSelected }: { achievement: Ac
           <h3 className="text-sm font-bold text-white mt-1 truncate">
             {achievement.title}
           </h3>
-          <p className="text-[10px] text-[#6b6b7b] mt-0.5">
+          <p className="text-[10px] text-[#8c8c9c] mt-0.5">
             {achievement.issuer} · {achievement.date}
           </p>
         </div>
@@ -67,11 +77,21 @@ function AchievementCard({ achievement, onClick, isSelected }: { achievement: Ac
 function AchievementModal({
   achievement,
   onClose,
+  shouldReduceMotion,
 }: {
   achievement: Achievement;
   onClose: () => void;
+  shouldReduceMotion: boolean;
 }) {
   const color = CATEGORY_COLORS[achievement.category] ?? '#3b82f6';
+
+  // Lock body scroll when achievement modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   return (
     <>
@@ -87,7 +107,7 @@ function AchievementModal({
       
       {/* Chamber Vault Unlock popup */}
       <motion.div
-        layoutId={`achievement-${achievement.id}`}
+        layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
         className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-[8001] p-8 rounded border bg-[#0d0d12]/95"
         style={{ borderColor: `${color}40`, boxShadow: `0 0 40px ${color}15` }}
         role="dialog"
@@ -103,10 +123,11 @@ function AchievementModal({
           <span className="text-5xl filter drop-shadow-[0_0_12px_rgba(59,130,246,0.4)]">{achievement.icon}</span>
           <button
             onClick={onClose}
-            className="p-2 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all"
+            className="relative p-3 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all focus-visible:ring-2 focus-visible:ring-blue-500"
             data-cursor-magnetic
             aria-label="Lock vault cell"
           >
+            <span className="absolute inset-[-8px] md:inset-0" />
             <X size={16} />
           </button>
         </div>
@@ -135,7 +156,7 @@ function AchievementModal({
             href={achievement.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-white/10 hover:border-white/30 rounded text-xs font-mono text-white/80 hover:text-white transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-white/10 hover:border-white/30 rounded text-xs font-mono text-white/80 hover:text-white transition-all focus-visible:ring-2 focus-visible:ring-white"
             data-cursor-magnetic
             aria-label="Inspect credentials"
           >
@@ -151,6 +172,7 @@ function AchievementModal({
 export function AchievementsVault() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion() ?? false;
 
   const filtered = activeCategory === 'all'
     ? achievements
@@ -165,16 +187,16 @@ export function AchievementsVault() {
         {/* Chamber Header */}
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">CHAMBER_05 // VAULT</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-4">
             <GlitchText text="ACHIEVEMENT VAULT" />
           </h2>
-          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#a0a0b0]">
+          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#8c8c9c]">
             Secure vault chambers containing verified certifications, academic records, and challenge codes.
           </p>
         </motion.div>
@@ -185,7 +207,7 @@ export function AchievementsVault() {
             <button
               key={cat.key}
               onClick={() => setActiveCategory(cat.key)}
-              className="px-4 py-2 rounded font-mono text-[10px] tracking-wider transition-all duration-300 border bg-[#0d0d12]/60 hover:bg-[#16161d]"
+              className="px-4 py-2 rounded font-mono text-[10px] tracking-wider transition-all duration-300 border bg-[#0d0d12]/60 hover:bg-[#16161d] focus-visible:ring-2 focus-visible:ring-blue-500"
               style={{
                 borderColor: activeCategory === cat.key ? '#3b82f6' : 'rgba(255, 255, 255, 0.05)',
                 color: activeCategory === cat.key ? '#3b82f6' : '#a0a0b0',
@@ -202,22 +224,23 @@ export function AchievementsVault() {
         {/* Cards grid */}
         <motion.div
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          layout
+          layout={!shouldReduceMotion}
         >
           <AnimatePresence mode="popLayout">
             {filtered.map((ach, i) => (
               <motion.div
                 key={ach.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
+                layout={!shouldReduceMotion}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
+                exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
                 transition={{ delay: i * 0.04 }}
               >
                 <AchievementCard
                   achievement={ach}
                   onClick={() => setSelectedId(ach.id)}
                   isSelected={selectedId === ach.id}
+                  shouldReduceMotion={shouldReduceMotion}
                 />
               </motion.div>
             ))}
@@ -231,6 +254,7 @@ export function AchievementsVault() {
           <AchievementModal
             achievement={selected}
             onClose={() => setSelectedId(null)}
+            shouldReduceMotion={shouldReduceMotion}
           />
         )}
       </AnimatePresence>

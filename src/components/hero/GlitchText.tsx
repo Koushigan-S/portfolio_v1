@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface GlitchTextProps {
   text: string;
@@ -12,8 +12,14 @@ interface GlitchTextProps {
 export function GlitchText({ text, className = '', delay = 0 }: GlitchTextProps) {
   const [displayText, setDisplayText] = useState('');
   const [isGlitching, setIsGlitching] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setDisplayText(text);
+      return;
+    }
+
     // 1. Matrix reconstruction animation
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&*';
     let iteration = 0;

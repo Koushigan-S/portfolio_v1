@@ -65,7 +65,7 @@ export function ContactSection() {
 
           {/* Holographic Visiting Card Container */}
           <motion.div
-            className="p-8 md:p-12 rounded border bg-black/60 border-blue-500/20 shadow-[0_0_40px_rgba(59,130,246,0.15)] relative overflow-hidden mb-16"
+            className="glass-heavy p-8 md:p-12 rounded-xl border border-blue-500/20 glow-primary relative overflow-hidden mb-16"
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -81,24 +81,24 @@ export function ContactSection() {
               
               {/* Left Side Info Card */}
               <div className="font-mono">
-                <span className="text-[10px] tracking-[0.2em] text-blue-400">KOUSHIGAN'S LAB</span>
+                <span className="text-[10px] tracking-[0.2em] text-blue-400">{"KOUSHIGAN'S LAB"}</span>
                 <h3 className="text-xl font-bold text-white mt-1 mb-1">{siteConfig.name}</h3>
                 <p className="text-xs text-[#a0a0b0] mb-6">{siteConfig.title}</p>
                 
                 <div className="space-y-3.5 text-xs text-[#a0a0b0]">
-                  <div className="flex items-center gap-2">
-                    <Mail size={12} className="text-blue-400" />
+                  <a href={`mailto:${socials.email}`} className="flex items-center gap-2 hover:text-white transition-colors group outline-none focus-visible:text-white">
+                    <Mail size={12} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
                     <span>{socials.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <GitBranch size={12} className="text-blue-400" />
+                  </a>
+                  <a href={socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors group outline-none focus-visible:text-white">
+                    <GitBranch size={12} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
                     <span>github.com/yourusername</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Link size={12} className="text-blue-400" />
+                  </a>
+                  <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors group outline-none focus-visible:text-white">
+                    <Link size={12} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
                     <span>linkedin.com/in/yourusername</span>
-                  </div>
-                  <div className="flex items-center gap-2">
+                  </a>
+                  <div className="flex items-center gap-2 select-none">
                     <Phone size={12} className="text-blue-400" />
                     <span>[PHONE]</span>
                   </div>
@@ -114,9 +114,9 @@ export function ContactSection() {
                     value={formData.name}
                     onChange={(e) => setFormData(f => ({ ...f, name: e.target.value }))}
                     placeholder=" "
-                    className="peer w-full px-3 pt-5 pb-2 rounded bg-black/40 border border-white/10 text-xs font-mono text-white outline-none focus:border-blue-500/50 transition-colors"
+                    className="peer w-full px-3 pt-5 pb-2 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white outline-none hover:border-white/20 focus:border-blue-500/50 focus:bg-black/70 transition-all duration-200"
                   />
-                  <label className="absolute left-3 top-1 text-[8px] font-mono text-white/40 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
+                  <label className="absolute left-3 top-1 text-[8px] font-mono text-[#8c8c9c] peer-focus:text-blue-400 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
                     NAME_NODE
                   </label>
                 </div>
@@ -128,9 +128,9 @@ export function ContactSection() {
                     value={formData.email}
                     onChange={(e) => setFormData(f => ({ ...f, email: e.target.value }))}
                     placeholder=" "
-                    className="peer w-full px-3 pt-5 pb-2 rounded bg-black/40 border border-white/10 text-xs font-mono text-white outline-none focus:border-blue-500/50 transition-colors"
+                    className="peer w-full px-3 pt-5 pb-2 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white outline-none hover:border-white/20 focus:border-blue-500/50 focus:bg-black/70 transition-all duration-200"
                   />
-                  <label className="absolute left-3 top-1 text-[8px] font-mono text-white/40 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
+                  <label className="absolute left-3 top-1 text-[8px] font-mono text-[#8c8c9c] peer-focus:text-blue-400 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
                     EMAIL_COORDS
                   </label>
                 </div>
@@ -142,9 +142,9 @@ export function ContactSection() {
                     value={formData.message}
                     onChange={(e) => setFormData(f => ({ ...f, message: e.target.value }))}
                     placeholder=" "
-                    className="peer w-full px-3 pt-5 pb-2 rounded bg-black/40 border border-white/10 text-xs font-mono text-white outline-none focus:border-blue-500/50 transition-colors resize-none"
+                    className="peer w-full px-3 pt-5 pb-2 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white outline-none hover:border-white/20 focus:border-blue-500/50 focus:bg-black/70 transition-all duration-200 resize-none"
                   />
-                  <label className="absolute left-3 top-1 text-[8px] font-mono text-white/40 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
+                  <label className="absolute left-3 top-1 text-[8px] font-mono text-[#8c8c9c] peer-focus:text-blue-400 uppercase tracking-widest peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-xs transition-all pointer-events-none">
                     TRANSMISSION_DATA
                   </label>
                 </div>
@@ -166,7 +166,7 @@ export function ContactSection() {
                 <button
                   type="submit"
                   disabled={state.status === 'loading'}
-                  className="w-full py-2.5 rounded bg-blue-600 hover:bg-blue-500 text-[10px] font-mono tracking-widest text-white flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(59,130,246,0.2)]"
+                  className="w-full py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-[10px] font-mono tracking-widest text-white flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_0_12px_rgba(59,130,246,0.2)] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   data-cursor-magnetic
                 >
                   <Send size={12} />

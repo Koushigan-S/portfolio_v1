@@ -20,7 +20,7 @@ export function CustomCursor() {
   const trailPoints = useRef<TrailPoint[]>([]);
   const isHovered = useRef(false);
   const isClicking = useRef(false);
-  const hoverType = useRef<'normal' | 'magnetic' | 'canvas3d'>('normal');
+  const hoverType = useRef<'normal' | 'magnetic' | 'canvas3d' | 'textInput'>('normal');
 
   useEffect(() => {
     // Avoid running cursor on touch-only devices
@@ -70,7 +70,11 @@ export function CustomCursor() {
       isHovered.current = true;
       ring?.classList.add('expanded');
 
-      if (target.hasAttribute('data-cursor-magnetic')) {
+      const tagName = target.tagName.toLowerCase();
+      if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') {
+        hoverType.current = 'textInput';
+        ring?.classList.add('hidden-cursor');
+      } else if (target.hasAttribute('data-cursor-magnetic')) {
         hoverType.current = 'magnetic';
         magneticElement = target;
         magneticBounds = target.getBoundingClientRect();
@@ -89,6 +93,7 @@ export function CustomCursor() {
       magneticBounds = null;
       ring?.classList.remove('expanded');
       ring?.classList.remove('crosshair');
+      ring?.classList.remove('hidden-cursor');
     };
 
     // Main animation loop
@@ -126,8 +131,8 @@ export function CustomCursor() {
         ring.style.top = `${cursorCurrent.current.y}px`;
       }
 
-      // Generate tail points if not hover screen corners
-      if (experienceConfig.features.particleSystem && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
+      // Generate tail points if not hover screen corners and not in text input
+      if (experienceConfig.features.particleSystem && hoverType.current !== 'textInput' && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
         trailPoints.current.push({
           x: cursorCurrent.current.x,
           y: cursorCurrent.current.y,
@@ -159,7 +164,7 @@ export function CustomCursor() {
 
     // Apply event listeners to interactive items
     const setupInteractions = () => {
-      const els = document.querySelectorAll('a, button, [role="button"], [data-cursor-magnetic], [data-cursor-3d]');
+      const els = document.querySelectorAll('a, button, [role="button"], input, select, textarea, [data-cursor-magnetic], [data-cursor-3d]');
       els.forEach((el) => {
         el.addEventListener('mouseenter', handleElementHover as any);
         el.addEventListener('mouseleave', handleElementLeave as any);
@@ -179,7 +184,7 @@ export function CustomCursor() {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       observer.disconnect();
-      const els = document.querySelectorAll('a, button, [role="button"], [data-cursor-magnetic]');
+      const els = document.querySelectorAll('a, button, [role="button"], input, select, textarea, [data-cursor-magnetic]');
       els.forEach((el) => {
         el.removeEventListener('mouseenter', handleElementHover as any);
         el.removeEventListener('mouseleave', handleElementLeave as any);
@@ -224,8 +229,20 @@ export function CustomCursor() {
         body {
           cursor: none !important;
         }
-        a, button, [role="button"], input, select, textarea {
+        a, button, [role="button"] {
           cursor: none !important;
+        }
+        /* Restore standard cursors for editing elements */
+        input, select, textarea {
+          cursor: auto !important;
+        }
+        input[type="text"], input[type="email"], textarea {
+          cursor: text !important;
+        }
+        .cursor-ring.hidden-cursor {
+          opacity: 0 !important;
+          width: 0px !important;
+          height: 0px !important;
         }
         .cursor-ring.expanded {
           width: 56px;

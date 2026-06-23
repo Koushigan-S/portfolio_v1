@@ -1,11 +1,12 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { visionItems } from '@/config/vision.config';
 import { GlitchText } from '../hero/GlitchText';
-import { Star } from 'lucide-react';
 
 export function VisionRoom() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section id="vision" className="relative min-h-screen py-24 bg-transparent border-b border-blue-500/10" aria-label="Vision Room">
       
@@ -22,16 +23,16 @@ export function VisionRoom() {
         {/* Chamber Header */}
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">CHAMBER_06 // FUTURE</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-4">
             <GlitchText text="VISION ROOM" />
           </h2>
-          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#a0a0b0]">
+          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#8c8c9c]">
             The final panoramic outlook viewing star coordinates of active future goals, targets, and goals parameters.
           </p>
         </motion.div>
@@ -51,11 +52,11 @@ export function VisionRoom() {
             {visionItems.map((item, index) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 25 }}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="p-6 rounded border bg-[#0d0d12]/80 border-blue-500/5 hover:border-blue-500/30 transition-all duration-300 group shadow-md"
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                className="glass p-6 rounded border transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group shadow-md"
                 data-cursor-magnetic
               >
                 {/* Visual state headers */}

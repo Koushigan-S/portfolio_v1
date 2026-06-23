@@ -1,11 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { aboutTimeline } from '@/config/timeline.config';
 import { GlitchText } from '../hero/GlitchText';
 import { ShieldAlert } from 'lucide-react';
 
 export function AboutTimeline() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section id="about" className="relative min-h-screen py-24 bg-transparent border-b border-blue-500/10" aria-label="Identity Chamber">
       
@@ -19,17 +21,17 @@ export function AboutTimeline() {
         
         {/* Chamber Header */}
         <motion.div
-          className="text-center mb-24"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center mb-20"
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">CHAMBER_01 // IDENTITY</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-4">
             <GlitchText text="IDENTITY CHAMBER" />
           </h2>
-          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#a0a0b0]">
+          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#8c8c9c]">
             System logs containing data feeds regarding origin history, educational track, and core records.
           </p>
         </motion.div>
@@ -49,11 +51,11 @@ export function AboutTimeline() {
             return (
               <motion.div
                 key={entry.id}
-                className={`relative flex mb-16 ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
-                initial={{ opacity: 0, y: 30 }}
+                className={`relative flex mb-12 md:mb-16 ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.7, delay: index * 0.08 }}
+                transition={{ duration: 0.6, delay: index * 0.05 }}
               >
                 {/* Holographic Pulse Node */}
                 <div
@@ -74,11 +76,11 @@ export function AboutTimeline() {
                 <div className={`ml-12 md:ml-0 w-full md:w-1/2 ${isEven ? 'md:pl-12' : 'md:pr-12'}`}>
                   {isClassified ? (
                     <div
-                      className="p-6 rounded border bg-red-950/15 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.1)] relative overflow-hidden"
+                      className="p-6 rounded border bg-gradient-to-br from-red-950/20 to-black/80 border-red-500/30 shadow-[0_0_24px_rgba(239,68,68,0.08)] relative overflow-hidden"
                       data-cursor-magnetic
                     >
                       <div className="absolute top-0 right-0 p-3 text-red-500/30">
-                        <ShieldAlert size={20} className="animate-pulse" />
+                        <ShieldAlert size={20} className={shouldReduceMotion ? '' : 'animate-pulse'} />
                       </div>
                       
                       <div className="flex items-center gap-3 mb-2 font-mono">
@@ -99,7 +101,7 @@ export function AboutTimeline() {
                     </div>
                   ) : (
                     <div
-                      className="p-6 rounded border bg-black/60 border-blue-500/10 hover:border-blue-500/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative"
+                      className="glass p-6 rounded border transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_24px_rgba(59,130,246,0.12)] group relative"
                       data-cursor-magnetic
                     >
                       {/* Interactive dot grid corners */}

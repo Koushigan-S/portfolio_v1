@@ -19,7 +19,7 @@ const NAV_CHAMBERS = [
 ];
 
 export function FloatingNav() {
-  const { currentSection, isMuted, toggleMute, deviceTier } = useDrone();
+  const { currentSection, isMuted, toggleMute, deviceTier, totalScrollProgress } = useDrone();
   const { scrollDir, atTop } = useScrollDirection();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
@@ -37,7 +37,7 @@ export function FloatingNav() {
         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
         aria-label="NOVA LAB HUD"
       >
-        <div className="glass flex items-center justify-between px-6 py-3 rounded-full pointer-events-auto border border-blue-500/25 bg-black/75 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+        <div className="relative glass flex items-center justify-between px-6 py-3 rounded-full pointer-events-auto border border-blue-500/25 bg-black/75 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
           
           {/* Left: Brand + Drone Status */}
           <div className="flex items-center gap-3">
@@ -63,12 +63,15 @@ export function FloatingNav() {
                 <a
                   key={chamber.href}
                   href={chamber.href}
-                  className="relative group p-1 flex items-center justify-center"
+                  className="relative group p-2 md:p-1 flex items-center justify-center focus-visible:ring-1 focus-visible:ring-blue-500"
                   onMouseEnter={() => setHoveredIdx(chamber.index)}
                   onMouseLeave={() => setHoveredIdx(null)}
                   data-cursor-magnetic
                   aria-label={`Go to ${chamber.label}`}
                 >
+                  {/* Invisible touch target expander for mobile accessibility */}
+                  <span className="absolute inset-[-6px] md:inset-0" />
+
                   {/* Glowing dot */}
                   <div
                     className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
@@ -112,6 +115,14 @@ export function FloatingNav() {
             >
               {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </button>
+          </div>
+
+          {/* Subtle scroll progress line at bottom of HUD pill */}
+          <div className="absolute bottom-0 left-6 right-6 h-[2px] bg-white/5 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-blue-500 to-blue-400"
+              style={{ scaleX: totalScrollProgress, transformOrigin: 'left' }}
+            />
           </div>
 
         </div>

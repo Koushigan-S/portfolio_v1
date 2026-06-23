@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { journeyPhases } from '@/config/timeline.config';
 import { useDrone } from '@/contexts/DroneContext';
-import { ChevronDown, DoorOpen } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { GlitchText } from '../hero/GlitchText';
 
 const STATUS_COLORS = {
@@ -22,6 +22,7 @@ const STATUS_LABELS = {
 export function JourneyMap() {
   const { currentSection } = useDrone();
   const [expandedId, setExpandedId] = useState<string | null>(journeyPhases[2].id); // default current phase open
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section id="timeline" className="relative min-h-screen py-24 bg-transparent border-b border-blue-500/10" aria-label="Timeline Corridor">
@@ -34,16 +35,16 @@ export function JourneyMap() {
         {/* Section Header */}
         <motion.div
           className="text-center mb-20"
-          initial={{ opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <p className="text-section-label tracking-[0.3em] mb-4 text-blue-500">CHAMBER_04 // PORTALS</p>
           <h2 className="text-display font-display text-white font-bold select-none mb-4">
             <GlitchText text="TIMELINE CORRIDOR" />
           </h2>
-          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#a0a0b0]">
+          <p className="mt-4 max-w-xl mx-auto font-mono text-xs text-[#8c8c9c]">
             The drone navigates down the dimensional corridor, unlocking chronological database files.
           </p>
         </motion.div>
@@ -65,7 +66,7 @@ export function JourneyMap() {
               <motion.div
                 key={phase.id}
                 className={`relative flex mb-12 flex-row ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-                initial={{ opacity: 0, y: 30 }}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-85px' }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
@@ -73,14 +74,14 @@ export function JourneyMap() {
                 {/* Holographic Portal Door Node */}
                 <div className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10 flex flex-col items-center mt-6">
                   <motion.button
-                    className="w-10 h-10 rounded border flex items-center justify-center text-sm font-mono transition-all duration-300 bg-[#0d0d12]/90 hover:bg-[#16161d]"
+                    className="w-10 h-10 rounded border flex items-center justify-center text-sm font-mono transition-all duration-300 bg-[#0d0d12]/90 hover:bg-[#16161d] focus-visible:ring-2 focus-visible:ring-blue-500"
                     style={{
                       borderColor: color,
                       boxShadow: phase.status === 'current' ? `0 0 15px ${color}50` : 'none',
                     }}
                     onClick={() => setExpandedId(isExpanded ? null : phase.id)}
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                     data-cursor-magnetic
                     aria-expanded={isExpanded}
                     aria-controls={`phase-details-${phase.id}`}
@@ -95,7 +96,7 @@ export function JourneyMap() {
                 {/* Corridor Record Box */}
                 <div className={`ml-20 md:ml-0 w-full md:w-1/2 ${isLeft ? 'md:pl-16' : 'md:pr-16'}`}>
                   <button
-                    className="w-full text-left p-6 rounded border bg-black/60 border-blue-500/10 hover:border-blue-500/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative"
+                    className="w-full text-left p-6 rounded border glass hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative focus-visible:ring-2 focus-visible:ring-blue-500"
                     onClick={() => setExpandedId(isExpanded ? null : phase.id)}
                     aria-expanded={isExpanded}
                   >
@@ -112,7 +113,7 @@ export function JourneyMap() {
                           {STATUS_LABELS[phase.status]}
                         </span>
                         
-                        <p className="text-[10px] font-mono tracking-widest text-[#6b6b7b] uppercase mb-1">
+                        <p className="text-[10px] font-mono tracking-widest text-[#8c8c9c] uppercase mb-1">
                           {phase.phase}
                         </p>
                         
@@ -129,7 +130,7 @@ export function JourneyMap() {
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                         aria-hidden
-                        className="text-[#6b6b7b] group-hover:text-blue-400"
+                        className="text-[#8c8c9c] group-hover:text-blue-400"
                       >
                         <ChevronDown size={16} />
                       </motion.div>
@@ -139,14 +140,14 @@ export function JourneyMap() {
                       {isExpanded && (
                         <motion.div
                           id={`phase-details-${phase.id}`}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+                          initial={shouldReduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                          animate={shouldReduceMotion ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+                          exit={shouldReduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
                           className="overflow-hidden"
                         >
                           <div className="mt-4 pt-4 border-t border-white/5">
-                            <p className="text-xs font-mono text-[#6b6b7b] mb-4 leading-relaxed">
+                            <p className="text-xs font-mono text-[#8c8c9c] mb-4 leading-relaxed">
                               {phase.description}
                             </p>
                             <ul className="space-y-1.5">

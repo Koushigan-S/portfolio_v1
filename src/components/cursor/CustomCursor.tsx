@@ -3,16 +3,27 @@
 import { useEffect, useRef } from 'react';
 import { experienceConfig } from '@/config/experience.config';
 
-interface TrailPoint {
+interface TubePoint {
+  x: number;
+  y: number;
+}
+
+interface Tube {
+  color: string;
+  speed: number;
+  width: number;
+  history: TubePoint[];
+  current: TubePoint;
+}
+
+interface LightParticle {
   x: number;
   y: number;
   vx: number;
   vy: number;
+  color: string;
   alpha: number;
   size: number;
-  sparkleSpeed: number;
-  angle: number;
-  rotationSpeed: number;
 }
 
 export function CustomCursor() {
@@ -21,9 +32,9 @@ export function CustomCursor() {
   const mousePos = useRef({ x: 0, y: 0 });
   const cursorTarget = useRef({ x: 0, y: 0 });
   const cursorCurrent = useRef({ x: 0, y: 0 });
-  const trailPoints = useRef<TrailPoint[]>([]);
-  const isHovered = useRef(false);
-  const isClicking = useRef(false);
+  
+  const tubesRef = useRef<Tube[]>([]);
+  const lightParticlesRef = useRef<LightParticle[]>([]);
   const hoverType = useRef<'normal' | 'magnetic' | 'canvas3d' | 'textInput'>('normal');
 
   useEffect(() => {
@@ -44,28 +55,41 @@ export function CustomCursor() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    // Initialize the neon tubes
+    tubesRef.current = [
+      {
+        color: '#f967fb', // Neon Pink
+        speed: 0.22,
+        width: 8,
+        history: [],
+        current: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      },
+      {
+        color: '#6958d5', // Neon Purple/Blue
+        speed: 0.15,
+        width: 7,
+        history: [],
+        current: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      },
+      {
+        color: '#53bc28', // Neon Green
+        speed: 0.10,
+        width: 6,
+        history: [],
+        current: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      },
+    ];
+
     // Track mouse
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
       cursorTarget.current = { x: e.clientX, y: e.clientY };
     };
 
-    const handleMouseDown = () => {
-      isClicking.current = true;
-    };
-
-    const handleMouseUp = () => {
-      isClicking.current = false;
-    };
-
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
 
     const handleElementHover = (e: MouseEvent) => {
       const target = e.currentTarget as HTMLElement;
-      isHovered.current = true;
-
       const tagName = target.tagName.toLowerCase();
       if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') {
         hoverType.current = 'textInput';
@@ -79,7 +103,6 @@ export function CustomCursor() {
     };
 
     const handleElementLeave = () => {
-      isHovered.current = false;
       hoverType.current = 'normal';
     };
 
@@ -93,71 +116,132 @@ export function CustomCursor() {
       cursorCurrent.current.x += (cursorTarget.current.x - cursorCurrent.current.x) * 0.12;
       cursorCurrent.current.y += (cursorTarget.current.y - cursorCurrent.current.y) * 0.12;
 
-      // Generate tail silver glitter particles if not hover screen corners and not in text input
-      if (experienceConfig.features.particleSystem && hoverType.current !== 'textInput' && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
-        const count = isClicking.current ? 4 : 2;
-        for (let i = 0; i < count; i++) {
-          trailPoints.current.push({
-            x: cursorCurrent.current.x + (Math.random() - 0.5) * 8,
-            y: cursorCurrent.current.y + (Math.random() - 0.5) * 8,
-            vx: (Math.random() - 0.5) * 1.6,
-            vy: (Math.random() - 0.5) * 1.6 - 0.4, // Slight upward float
-            alpha: 0.8 + Math.random() * 0.2,
-            size: Math.random() * 4 + 1.2, // Glitter size range
-            sparkleSpeed: 0.08 + Math.random() * 0.15,
-            angle: Math.random() * Math.PI * 2,
-            rotationSpeed: (Math.random() - 0.5) * 0.15,
-          });
-        }
+      // Update tubes positions and histories
+      if (hoverType.current !== 'textInput' && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
+        tubesRef.current.forEach((tube) => {
+          // Slide head towards mouse
+          tube.current.x += (cursorCurrent.current.x - tube.current.x) * tube.speed;
+          tube.current.y += (cursorCurrent.current.y - tube.current.y) * tube.speed;
+
+          // Push into history
+          tube.history.unshift({ x: tube.current.x, y: tube.current.y });
+          if (tube.history.length > 25) {
+            tube.history.pop();
+          }
+        });
+      } else {
+        // Decay histories when in textInput or inactive
+        tubesRef.current.forEach((tube) => {
+          if (tube.history.length > 0) {
+            tube.history.pop();
+          }
+        });
       }
 
-      // Draw and decay particle trails
-      trailPoints.current.forEach((pt) => {
-        // Physics update
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.vx *= 0.97;
-        pt.vy *= 0.97;
-        pt.alpha -= 0.025; // Gentler decay
-        pt.size *= 0.95; // Shrink slightly
-        pt.angle += pt.rotationSpeed;
+      // Draw tubes (Double pass: Outer Glow, then Inner Bright Core)
+      if (experienceConfig.features.particleSystem) {
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
 
-        if (pt.alpha > 0) {
+        // PASS 1: Outer Glow
+        tubesRef.current.forEach((tube) => {
+          if (tube.history.length < 2) return;
+
           ctx.save();
-          ctx.translate(pt.x, pt.y);
-          ctx.rotate(pt.angle);
+          ctx.shadowBlur = 25;
+          ctx.shadowColor = tube.color;
 
-          // Draw custom 4-pointed silver star/diamond glitter flake
-          ctx.beginPath();
-          const r = pt.size * (0.55 + Math.sin(Date.now() * pt.sparkleSpeed) * 0.45); // Active shimmer
-          
-          ctx.moveTo(0, -r);
-          ctx.lineTo(r * 0.35, -r * 0.35);
-          ctx.lineTo(r, 0);
-          ctx.lineTo(r * 0.35, r * 0.35);
-          ctx.lineTo(0, r);
-          ctx.lineTo(-r * 0.35, r * 0.35);
-          ctx.lineTo(-r, 0);
-          ctx.lineTo(-r * 0.35, -r * 0.35);
-          ctx.closePath();
+          for (let i = 0; i < tube.history.length - 1; i++) {
+            const p1 = tube.history[i];
+            const p2 = tube.history[i + 1];
 
-          // Premium silver/white gradient fill
-          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
-          gradient.addColorStop(0, '#ffffff'); // bright center
-          gradient.addColorStop(0.25, '#f1f5f9'); // white/silver
-          gradient.addColorStop(0.6, '#cbd5e1'); // silver metal
-          gradient.addColorStop(0.9, '#94a3b8'); // steel shadow
-          gradient.addColorStop(1, 'transparent');
+            const ratio = 1 - i / tube.history.length;
+            ctx.lineWidth = tube.width * 1.8 * ratio;
+            ctx.strokeStyle = tube.color;
+            ctx.globalAlpha = 0.25 * ratio;
 
-          ctx.fillStyle = gradient;
-          ctx.globalAlpha = pt.alpha;
-          ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
           ctx.restore();
-        }
-      });
+        });
 
-      // Filter out faded points
-      trailPoints.current = trailPoints.current.filter((pt) => pt.alpha > 0);
+        // PASS 2: Inner Core
+        tubesRef.current.forEach((tube) => {
+          if (tube.history.length < 2) return;
+
+          ctx.save();
+          for (let i = 0; i < tube.history.length - 1; i++) {
+            const p1 = tube.history[i];
+            const p2 = tube.history[i + 1];
+
+            const ratio = 1 - i / tube.history.length;
+            ctx.lineWidth = tube.width * 0.7 * ratio;
+            ctx.strokeStyle = '#ffffff'; // Bright core
+            ctx.globalAlpha = 0.9 * ratio;
+
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+
+            // Overlay thin accent colored stroke to blend
+            ctx.lineWidth = tube.width * 0.5 * ratio;
+            ctx.strokeStyle = tube.color;
+            ctx.globalAlpha = 0.5 * ratio;
+            ctx.stroke();
+          }
+          ctx.restore();
+        });
+
+        // Spawn Light Sparkles along the fastest moving tubes
+        const mouseDelta = Math.hypot(
+          cursorCurrent.current.x - cursorTarget.current.x,
+          cursorCurrent.current.y - cursorTarget.current.y
+        );
+        if (mouseDelta > 2 && Math.random() < 0.4 && hoverType.current !== 'textInput') {
+          const lightColors = ["#83f36e", "#fe8a2e", "#ff608a", "#68aed5"];
+          const randColor = lightColors[Math.floor(Math.random() * lightColors.length)];
+          
+          // Spawn near the primary tube head
+          const head = tubesRef.current[0].current;
+          lightParticlesRef.current.push({
+            x: head.x + (Math.random() - 0.5) * 12,
+            y: head.y + (Math.random() - 0.5) * 12,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2 - 0.4,
+            color: randColor,
+            alpha: 1.0,
+            size: Math.random() * 3 + 1.5,
+          });
+        }
+
+        // Draw and update light particles
+        lightParticlesRef.current.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.alpha -= 0.035;
+
+          if (p.alpha > 0) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 12;
+            ctx.globalAlpha = p.alpha;
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+
+        // Filter active particles
+        lightParticlesRef.current = lightParticlesRef.current.filter((p) => p.alpha > 0);
+      }
 
       rafId = requestAnimationFrame(tick);
     };
@@ -183,8 +267,6 @@ export function CustomCursor() {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
       observer.disconnect();
       const els = document.querySelectorAll('a, button, [role="button"], input, select, textarea, [data-cursor-magnetic]');
       els.forEach((el) => {
@@ -212,10 +294,10 @@ export function CustomCursor() {
       />
       <style jsx global>{`
         body {
-          cursor: url('/cursor-glass-32.png') 0 0, default !important;
+          cursor: default !important;
         }
         a, button, [role="button"], [data-cursor-magnetic] {
-          cursor: url('/cursor-glass-32.png') 0 0, pointer !important;
+          cursor: pointer !important;
         }
         input, select, textarea {
           cursor: auto !important;

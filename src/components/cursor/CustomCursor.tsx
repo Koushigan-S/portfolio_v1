@@ -1,13 +1,18 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { experienceConfig } from '@/config/experience.config';
 
 interface TrailPoint {
   x: number;
   y: number;
+  vx: number;
+  vy: number;
   alpha: number;
   size: number;
+  sparkleSpeed: number;
+  angle: number;
+  rotationSpeed: number;
 }
 
 export function CustomCursor() {
@@ -131,26 +136,66 @@ export function CustomCursor() {
         ring.style.top = `${cursorCurrent.current.y}px`;
       }
 
-      // Generate tail points if not hover screen corners and not in text input
+      // Generate tail silver glitter particles if not hover screen corners and not in text input
       if (experienceConfig.features.particleSystem && hoverType.current !== 'textInput' && cursorCurrent.current.x > 0 && cursorCurrent.current.y > 0) {
-        trailPoints.current.push({
-          x: cursorCurrent.current.x,
-          y: cursorCurrent.current.y,
-          alpha: 1.0,
-          size: isClicking.current ? 3 : 5,
-        });
+        const count = isClicking.current ? 4 : 2;
+        for (let i = 0; i < count; i++) {
+          trailPoints.current.push({
+            x: cursorCurrent.current.x + (Math.random() - 0.5) * 8,
+            y: cursorCurrent.current.y + (Math.random() - 0.5) * 8,
+            vx: (Math.random() - 0.5) * 1.6,
+            vy: (Math.random() - 0.5) * 1.6 - 0.4, // Slight upward float
+            alpha: 0.8 + Math.random() * 0.2,
+            size: Math.random() * 4 + 1.2, // Glitter size range
+            sparkleSpeed: 0.08 + Math.random() * 0.15,
+            angle: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.15,
+          });
+        }
       }
 
       // Draw and decay particle trails
-      trailPoints.current.forEach((pt, idx) => {
-        pt.alpha -= 0.05; // Fade over time
-        pt.size *= 0.95; // Shrink
-        
+      trailPoints.current.forEach((pt) => {
+        // Physics update
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vx *= 0.97;
+        pt.vy *= 0.97;
+        pt.alpha -= 0.025; // Gentler decay
+        pt.size *= 0.95; // Shrink slightly
+        pt.angle += pt.rotationSpeed;
+
         if (pt.alpha > 0) {
+          ctx.save();
+          ctx.translate(pt.x, pt.y);
+          ctx.rotate(pt.angle);
+
+          // Draw custom 4-pointed silver star/diamond glitter flake
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(59, 130, 246, ${pt.alpha * 0.4})`; // Electric blue
+          const r = pt.size * (0.55 + Math.sin(Date.now() * pt.sparkleSpeed) * 0.45); // Active shimmer
+          
+          ctx.moveTo(0, -r);
+          ctx.lineTo(r * 0.35, -r * 0.35);
+          ctx.lineTo(r, 0);
+          ctx.lineTo(r * 0.35, r * 0.35);
+          ctx.lineTo(0, r);
+          ctx.lineTo(-r * 0.35, r * 0.35);
+          ctx.lineTo(-r, 0);
+          ctx.lineTo(-r * 0.35, -r * 0.35);
+          ctx.closePath();
+
+          // Premium silver/white gradient fill
+          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+          gradient.addColorStop(0, '#ffffff'); // bright center
+          gradient.addColorStop(0.25, '#f1f5f9'); // white/silver
+          gradient.addColorStop(0.6, '#cbd5e1'); // silver metal
+          gradient.addColorStop(0.9, '#94a3b8'); // steel shadow
+          gradient.addColorStop(1, 'transparent');
+
+          ctx.fillStyle = gradient;
+          ctx.globalAlpha = pt.alpha;
           ctx.fill();
+          ctx.restore();
         }
       });
 
@@ -166,8 +211,8 @@ export function CustomCursor() {
     const setupInteractions = () => {
       const els = document.querySelectorAll('a, button, [role="button"], input, select, textarea, [data-cursor-magnetic], [data-cursor-3d]');
       els.forEach((el) => {
-        el.addEventListener('mouseenter', handleElementHover as any);
-        el.addEventListener('mouseleave', handleElementLeave as any);
+        el.addEventListener('mouseenter', handleElementHover as EventListener);
+        el.addEventListener('mouseleave', handleElementLeave as EventListener);
       });
     };
 
@@ -186,8 +231,8 @@ export function CustomCursor() {
       observer.disconnect();
       const els = document.querySelectorAll('a, button, [role="button"], input, select, textarea, [data-cursor-magnetic]');
       els.forEach((el) => {
-        el.removeEventListener('mouseenter', handleElementHover as any);
-        el.removeEventListener('mouseleave', handleElementLeave as any);
+        el.removeEventListener('mouseenter', handleElementHover as EventListener);
+        el.removeEventListener('mouseleave', handleElementLeave as EventListener);
       });
     };
   }, []);
@@ -217,22 +262,25 @@ export function CustomCursor() {
           left: 0,
           width: '36px',
           height: '36px',
-          border: '1.5px solid rgba(59, 130, 246, 0.6)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9998,
           transform: 'translate(-50%, -50%)',
-          transition: 'width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s',
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+          transition: 'width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, box-shadow 0.3s',
         }}
       />
       <style jsx global>{`
         body {
-          cursor: none !important;
+          cursor: default !important;
         }
-        a, button, [role="button"] {
-          cursor: none !important;
+        a, button, [role="button"], [data-cursor-magnetic] {
+          cursor: pointer !important;
         }
-        /* Restore standard cursors for editing elements */
         input, select, textarea {
           cursor: auto !important;
         }
@@ -245,10 +293,11 @@ export function CustomCursor() {
           height: 0px !important;
         }
         .cursor-ring.expanded {
-          width: 56px;
-          height: 56px;
-          background-color: rgba(59, 130, 246, 0.05);
-          border-color: rgba(59, 130, 246, 0.9);
+          width: 56px !important;
+          height: 56px !important;
+          background-color: rgba(255, 255, 255, 0.1) !important;
+          border-color: rgba(59, 130, 246, 0.5) !important;
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
         }
         .cursor-ring.crosshair::before,
         .cursor-ring.crosshair::after {

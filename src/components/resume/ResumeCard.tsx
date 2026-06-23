@@ -75,7 +75,7 @@ export function ResumeCard() {
         >
           {/* Card body */}
           <div
-            className="p-[15px] rounded-xl border bg-black/60 border-blue-500/20 group-hover:border-blue-500/35 transition-all duration-300 relative cursor-pointer shadow-[0_0_25px_rgba(59,130,246,0.1)]"
+            className="p-8 md:p-10 rounded-2xl border bg-black/60 border-blue-500/20 group-hover:border-blue-500/35 transition-all duration-300 relative cursor-pointer shadow-[0_0_25px_rgba(59,130,246,0.1)]"
             data-cursor-magnetic
           >
             {/* HUD lines */}
@@ -134,7 +134,7 @@ export function ResumeCard() {
 
             {/* Document body container */}
             <motion.div
-              className="relative z-10 w-full max-w-3xl bg-[#0d0d12]/95 border border-blue-500/20 rounded-xl p-[15px] md:p-[20px] overflow-y-auto max-h-[90vh] shadow-[0_0_50px_rgba(59,130,246,0.15)] font-mono text-xs text-[#a0a0b0]"
+              className="relative z-10 w-full max-w-3xl bg-[#0d0d12]/95 border border-blue-500/20 rounded-2xl p-8 md:p-12 overflow-y-auto max-h-[90vh] shadow-[0_0_50px_rgba(59,130,246,0.15)] font-mono text-xs text-[#a0a0b0]"
               initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 30 }}

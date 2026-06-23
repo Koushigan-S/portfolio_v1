@@ -134,7 +134,7 @@ export function ContactSection() {
 
           {/* Holographic Visiting Card Container */}
           <motion.div
-            className="glass-heavy p-[15px] rounded-xl border border-blue-500/20 glow-primary relative overflow-hidden mb-16"
+            className="glass-heavy p-8 md:p-12 rounded-2xl border border-blue-500/20 glow-primary relative overflow-hidden mb-16"
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}

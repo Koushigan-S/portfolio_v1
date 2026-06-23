@@ -208,7 +208,7 @@ function ProjectModal({
       
       {/* Apple-style Showcase Modal */}
       <motion.div
-        className="relative z-10 w-full max-w-3xl bg-[#0d0d12]/95 border border-blue-500/20 rounded-xl p-[15px] md:p-[20px] overflow-y-auto max-h-[85vh] shadow-[0_0_50px_rgba(59,130,246,0.15)]"
+        className="relative z-10 w-full max-w-3xl bg-[#0d0d12]/95 border border-blue-500/20 rounded-2xl p-8 md:p-12 overflow-y-auto max-h-[85vh] shadow-[0_0_50px_rgba(59,130,246,0.15)]"
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 30 }}
@@ -364,12 +364,12 @@ export function ProjectGalaxy() {
             <GalaxyCanvasDynamic selectedId={selectedId} onSelect={handleSelect} shouldReduceMotion={shouldReduceMotion} />
           ) : (
             // High quality fallback list layout
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-[15px] h-full overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-12 h-full overflow-y-auto">
               {projects.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => handleSelect(p.id)}
-                  className="p-[15px] rounded-xl border border-blue-500/20 bg-black/30 hover:bg-[#0d0d12]/50 hover:border-blue-500/30 text-left transition-all duration-300 relative group focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="p-8 md:p-10 rounded-2xl border border-blue-500/20 bg-black/30 hover:bg-[#0d0d12]/50 hover:border-blue-500/30 text-left transition-all duration-300 relative group focus-visible:ring-2 focus-visible:ring-blue-500"
                   data-cursor-magnetic
                 >
                   <span className="font-mono text-[9px] text-blue-400/50 uppercase tracking-widest">

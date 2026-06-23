@@ -65,7 +65,7 @@ export function JourneyMap() {
             return (
               <motion.div
                 key={phase.id}
-                className={`relative flex mb-12 flex-row ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                className={`relative flex mb-8 flex-row ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                 initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-85px' }}
@@ -96,7 +96,7 @@ export function JourneyMap() {
                 {/* Corridor Record Box */}
                 <div className={`ml-20 md:ml-0 w-full md:w-1/2 ${isLeft ? 'md:pl-16' : 'md:pr-16'}`}>
                   <button
-                    className="w-full text-left p-8 rounded border glass hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative focus-visible:ring-2 focus-visible:ring-blue-500"
+                    className="w-full text-left p-[15px] rounded-xl border border-white/10 glass hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-300 shadow-[0_0_15px_rgba(0,0,0,0.5)] group relative focus-visible:ring-2 focus-visible:ring-blue-500"
                     onClick={() => setExpandedId(isExpanded ? null : phase.id)}
                     aria-expanded={isExpanded}
                   >

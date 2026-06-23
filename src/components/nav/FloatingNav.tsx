@@ -40,7 +40,7 @@ export function FloatingNav() {
     <>
       {/* HUD Layout Navbar */}
       <motion.nav
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-[1000] w-[92vw] max-w-[1100px] pointer-events-none"
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-[1000] w-[92vw] max-w-[1100px] pointer-events-none"
         animate={{
           y: hidden ? -100 : 0,
           opacity: hidden ? 0 : 1,
@@ -48,7 +48,7 @@ export function FloatingNav() {
         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
         aria-label="NOVA LAB HUD"
       >
-        <div className="relative liquid-nav flex items-center justify-between px-4 py-2.5 sm:px-8 sm:py-3.5 pointer-events-auto">
+        <div className="relative liquid-nav flex items-center justify-between p-[15px] pointer-events-auto">
           
           {/* Left: Brand + Drone Status */}
           <div className="flex items-center gap-3">

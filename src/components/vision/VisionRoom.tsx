@@ -38,7 +38,7 @@ export function VisionRoom() {
         </motion.div>
 
         {/* Panoramic Glass Framing container */}
-        <div className="relative border border-blue-500/10 rounded-xl bg-black/45 p-10 md:p-16 shadow-[0_0_30px_rgba(59,130,246,0.05)] overflow-hidden">
+        <div className="relative border border-blue-500/20 rounded-xl bg-black/45 p-[15px] md:p-[20px] shadow-[0_0_30px_rgba(59,130,246,0.05)] overflow-hidden">
           
           {/* Panoramic Reticle HUD lines */}
           <div className="absolute top-4 left-4 font-mono text-[9px] text-blue-400/40">
@@ -48,7 +48,7 @@ export function VisionRoom() {
             AZIMUTH: 184.22 // ELEVATION: 42.8
           </div>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             {visionItems.map((item, index) => (
               <motion.div
                 key={item.id}
@@ -56,7 +56,7 @@ export function VisionRoom() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.08 }}
-                className="glass p-8 rounded border transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group shadow-md"
+                className="glass p-[15px] rounded-xl border border-blue-500/20 transition-all duration-300 hover:border-blue-500/35 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] group shadow-md"
                 data-cursor-magnetic
               >
                 {/* Visual state headers */}

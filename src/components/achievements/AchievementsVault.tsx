@@ -31,7 +31,7 @@ function AchievementCard({
   return (
     <motion.button
       layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
-      className="w-full text-left p-8 rounded border bg-[#0d0d12]/75 border-blue-500/10 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)] focus-visible:ring-2 focus-visible:ring-blue-500"
+      className="w-full text-left p-[15px] rounded-xl border bg-[#0d0d12]/75 border-blue-500/20 hover:border-blue-500/35 transition-all duration-300 relative overflow-hidden group shadow-[0_0_12px_rgba(0,0,0,0.6)] focus-visible:ring-2 focus-visible:ring-blue-500"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -108,7 +108,7 @@ function AchievementModal({
       {/* Chamber Vault Unlock popup */}
       <motion.div
         layoutId={shouldReduceMotion ? undefined : `achievement-${achievement.id}`}
-        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-[8001] p-10 md:p-14 rounded border bg-[#0d0d12]/95"
+        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-lg z-[8001] p-[15px] md:p-[20px] rounded-xl border bg-[#0d0d12]/95"
         style={{ borderColor: `${color}40`, boxShadow: `0 0 40px ${color}15` }}
         role="dialog"
         aria-modal="true"
@@ -223,7 +223,7 @@ export function AchievementsVault() {
 
         {/* Cards grid */}
         <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
           layout={!shouldReduceMotion}
         >
           <AnimatePresence mode="popLayout">
